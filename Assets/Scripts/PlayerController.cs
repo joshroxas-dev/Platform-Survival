@@ -26,24 +26,34 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
+
+
         Vector3 playerPosition = m_Rb.position;
 
-        Vector3 move = new Vector3(horizontalInput, 0, verticalInput);
-        move.Normalize();
+        Vector3 move = new Vector3(horizontalInput, 0, verticalInput).normalized;
+
+        if (move == Vector3.zero)
+        {
+            return;
+        }
+        //rotate the player
+        Quaternion targetRotation = Quaternion.LookRotation(move);
 
         if (m_Elevator != null)
         {
             playerPosition.y = m_Elevator.transform.position.y + m_ElevatorOffsetY;
         }
 
-        m_Rb.MovePosition(playerPosition + move * speed * velocity);
+        targetRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360 * Time.fixedDeltaTime);
 
-        
+        m_Rb.MovePosition(playerPosition + move * speed * velocity);
+        m_Rb.MoveRotation(targetRotation);
+
     }
 
     void LateUpdate()
     {
-        followCamera.transform.position = m_Rb.position + m_CameraPosition;    
+        followCamera.transform.position = m_Rb.position + m_CameraPosition;
     }
 
     void Update()
