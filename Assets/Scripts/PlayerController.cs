@@ -6,10 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody m_Rb;
     private GameObject m_Elevator;
+    private GameObject m_PowerUp;
     private float m_ElevatorOffsetY;
     private Vector3 m_CameraPosition;
     public Camera followCamera;
-    public float speed = 10;
+    public float speed = 3;
 
     void Awake()
     {
@@ -70,6 +71,14 @@ public class PlayerController : MonoBehaviour
         {
             m_Elevator = other.gameObject;
             m_ElevatorOffsetY = transform.position.y - m_Elevator.transform.position.y;
+        }
+
+        if (other.CompareTag("powerUp"))
+        {
+            Debug.Log("you got the powerup");
+            speed++;
+            m_PowerUp = other.gameObject;
+            Destroy(m_PowerUp);
         }
     }
 
